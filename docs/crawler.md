@@ -6,7 +6,7 @@
 
 | Metric | Count |
 |--------|-------|
-| 🔧 Functions | 4 |
+| 🔧 Functions | 5 |
 | 🧱 Classes | 1 |
 | 📦 Imports | 2 |
 | 📊 Variables & Constants | 6 |
@@ -38,8 +38,8 @@
 | Name | Type | Kind | Value | Exported |
 |------|------|------|-------|----------|
 | `urlObj` | `URL` | let/var | `new URL(url)` | ✗ |
-| `response` | `AxiosResponse<any, any, {}>` | let/var | `await axios.get(url, { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Sim...` | ✗ |
-| `title` | `string` | let/var | `$('title').text().trim() \|\| 'No title'` | ✗ |
+| `response` | `AxiosResponse<any, any, {}>` | let/var | `await axios.get(url, { headers: { "User-Agent": "Mozilla/5.0 (compatible; Sim...` | ✗ |
+| `title` | `string` | let/var | `$("title").text().trim() \|\| "No title"` | ✗ |
 | `links` | `string[]` | let/var | `[]` | ✗ |
 | `absoluteUrl` | `string` | const | `new URL(href, url).href` | ✗ |
 | `result` | `CrawlResult` | let/var | `{ url, title, links, depth, statusCode: response.status, }` | ✗ |
@@ -110,8 +110,8 @@ async crawl(startUrl: string): Promise<CrawlResult[]> {
 - `console.log`
 - `axios.get`
 - `cheerio.load`
-- `$('title').text().trim`
-- `$('a[href]').each`
+- `$("title").text().trim`
+- `$("a[href]").each`
 - `$(element).attr`
 - `absoluteUrl.startsWith`
 - `links.push`
@@ -140,7 +140,10 @@ async crawl(startUrl: string): Promise<CrawlResult[]> {
 ```typescript
 private async crawlUrl(url: string, depth: number): Promise<void> {
     // Check if we've reached our limits
-    if (depth > this.options.maxDepth || this.visited.size >= this.options.maxPages) {
+    if (
+      depth > this.options.maxDepth ||
+      this.visited.size >= this.options.maxPages
+    ) {
       return;
     }
 
@@ -152,8 +155,9 @@ private async crawlUrl(url: string, depth: number): Promise<void> {
     // Check if domain is allowed
     if (this.options.allowedDomains.length > 0) {
       const urlObj = new URL(url);
-      const isAllowed = this.options.allowedDomains.some(domain =>
-        urlObj.hostname === domain || urlObj.hostname.endsWith(`.${domain}`)
+      const isAllowed = this.options.allowedDomains.some(
+        (domain) =>
+          urlObj.hostname === domain || urlObj.hostname.endsWith(`.${domain}`)
       );
       if (!isAllowed) {
         return;
@@ -167,24 +171,27 @@ private async crawlUrl(url: string, depth: number): Promise<void> {
       // Fetch the page
       const response = await axios.get(url, {
         headers: {
-          'User-Agent': 'Mozilla/5.0 (compatible; SimpleWebCrawler/1.0)',
+          "User-Agent": "Mozilla/5.0 (compatible; SimpleWebCrawler/1.0)",
         },
         timeout: 10000,
       });
 
       // Parse HTML
       const $ = cheerio.load(response.data);
-      const title = $('title').text().trim() || 'No title';
+      const title = $("title").text().trim() || "No title";
 
       // Extract all links
       const links: string[] = [];
-      $('a[href]').each((_, element) => {
-        const href = $(element).attr('href');
+      $("a[href]").each((_, element) => {
+        const href = $(element).attr("href");
         if (href) {
           try {
             const absoluteUrl = new URL(href, url).href;
             // Only include HTTP(S) URLs
-            if (absoluteUrl.startsWith('http://') || absoluteUrl.startsWith('https://')) {
+            if (
+              absoluteUrl.startsWith("http://") ||
+              absoluteUrl.startsWith("https://")
+            ) {
               links.push(absoluteUrl);
             }
           } catch (e) {
@@ -212,7 +219,6 @@ private async crawlUrl(url: string, depth: number): Promise<void> {
       for (const link of links) {
         await this.crawlUrl(link, depth + 1);
       }
-
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error(`  Error crawling ${url}: ${error.message}`);
@@ -247,7 +253,7 @@ private async crawlUrl(url: string, depth: number): Promise<void> {
 
 ```typescript
 private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 ```
 </details>
@@ -275,8 +281,25 @@ getStats() {
     return {
       totalPages: this.results.length,
       uniqueUrls: this.visited.size,
-      maxDepthReached: Math.max(...this.results.map(r => r.depth), 0),
+      maxDepthReached: Math.max(...this.results.map((r) => r.depth), 0),
     };
+  }
+```
+</details>
+
+### `WebCrawler.test(): void`
+
+**Returns:** `void`
+
+**Calls:**
+
+- `console.log`
+
+<details><summary>Code</summary>
+
+```typescript
+private test() {
+    console.log("This is a test method.");
   }
 ```
 </details>
@@ -323,7 +346,10 @@ export class WebCrawler {
    */
   private async crawlUrl(url: string, depth: number): Promise<void> {
     // Check if we've reached our limits
-    if (depth > this.options.maxDepth || this.visited.size >= this.options.maxPages) {
+    if (
+      depth > this.options.maxDepth ||
+      this.visited.size >= this.options.maxPages
+    ) {
       return;
     }
 
@@ -335,8 +361,9 @@ export class WebCrawler {
     // Check if domain is allowed
     if (this.options.allowedDomains.length > 0) {
       const urlObj = new URL(url);
-      const isAllowed = this.options.allowedDomains.some(domain =>
-        urlObj.hostname === domain || urlObj.hostname.endsWith(`.${domain}`)
+      const isAllowed = this.options.allowedDomains.some(
+        (domain) =>
+          urlObj.hostname === domain || urlObj.hostname.endsWith(`.${domain}`)
       );
       if (!isAllowed) {
         return;
@@ -350,24 +377,27 @@ export class WebCrawler {
       // Fetch the page
       const response = await axios.get(url, {
         headers: {
-          'User-Agent': 'Mozilla/5.0 (compatible; SimpleWebCrawler/1.0)',
+          "User-Agent": "Mozilla/5.0 (compatible; SimpleWebCrawler/1.0)",
         },
         timeout: 10000,
       });
 
       // Parse HTML
       const $ = cheerio.load(response.data);
-      const title = $('title').text().trim() || 'No title';
+      const title = $("title").text().trim() || "No title";
 
       // Extract all links
       const links: string[] = [];
-      $('a[href]').each((_, element) => {
-        const href = $(element).attr('href');
+      $("a[href]").each((_, element) => {
+        const href = $(element).attr("href");
         if (href) {
           try {
             const absoluteUrl = new URL(href, url).href;
             // Only include HTTP(S) URLs
-            if (absoluteUrl.startsWith('http://') || absoluteUrl.startsWith('https://')) {
+            if (
+              absoluteUrl.startsWith("http://") ||
+              absoluteUrl.startsWith("https://")
+            ) {
               links.push(absoluteUrl);
             }
           } catch (e) {
@@ -395,7 +425,6 @@ export class WebCrawler {
       for (const link of links) {
         await this.crawlUrl(link, depth + 1);
       }
-
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error(`  Error crawling ${url}: ${error.message}`);
@@ -409,7 +438,7 @@ export class WebCrawler {
    * Delay execution for the specified milliseconds
    */
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -419,8 +448,12 @@ export class WebCrawler {
     return {
       totalPages: this.results.length,
       uniqueUrls: this.visited.size,
-      maxDepthReached: Math.max(...this.results.map(r => r.depth), 0),
+      maxDepthReached: Math.max(...this.results.map((r) => r.depth), 0),
     };
+  }
+
+  private test() {
+    console.log("This is a test method.");
   }
 }
 ```
@@ -452,7 +485,10 @@ async crawl(startUrl: string): Promise<CrawlResult[]> {
 ```ts
 private async crawlUrl(url: string, depth: number): Promise<void> {
     // Check if we've reached our limits
-    if (depth > this.options.maxDepth || this.visited.size >= this.options.maxPages) {
+    if (
+      depth > this.options.maxDepth ||
+      this.visited.size >= this.options.maxPages
+    ) {
       return;
     }
 
@@ -464,8 +500,9 @@ private async crawlUrl(url: string, depth: number): Promise<void> {
     // Check if domain is allowed
     if (this.options.allowedDomains.length > 0) {
       const urlObj = new URL(url);
-      const isAllowed = this.options.allowedDomains.some(domain =>
-        urlObj.hostname === domain || urlObj.hostname.endsWith(`.${domain}`)
+      const isAllowed = this.options.allowedDomains.some(
+        (domain) =>
+          urlObj.hostname === domain || urlObj.hostname.endsWith(`.${domain}`)
       );
       if (!isAllowed) {
         return;
@@ -479,24 +516,27 @@ private async crawlUrl(url: string, depth: number): Promise<void> {
       // Fetch the page
       const response = await axios.get(url, {
         headers: {
-          'User-Agent': 'Mozilla/5.0 (compatible; SimpleWebCrawler/1.0)',
+          "User-Agent": "Mozilla/5.0 (compatible; SimpleWebCrawler/1.0)",
         },
         timeout: 10000,
       });
 
       // Parse HTML
       const $ = cheerio.load(response.data);
-      const title = $('title').text().trim() || 'No title';
+      const title = $("title").text().trim() || "No title";
 
       // Extract all links
       const links: string[] = [];
-      $('a[href]').each((_, element) => {
-        const href = $(element).attr('href');
+      $("a[href]").each((_, element) => {
+        const href = $(element).attr("href");
         if (href) {
           try {
             const absoluteUrl = new URL(href, url).href;
             // Only include HTTP(S) URLs
-            if (absoluteUrl.startsWith('http://') || absoluteUrl.startsWith('https://')) {
+            if (
+              absoluteUrl.startsWith("http://") ||
+              absoluteUrl.startsWith("https://")
+            ) {
               links.push(absoluteUrl);
             }
           } catch (e) {
@@ -524,7 +564,6 @@ private async crawlUrl(url: string, depth: number): Promise<void> {
       for (const link of links) {
         await this.crawlUrl(link, depth + 1);
       }
-
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error(`  Error crawling ${url}: ${error.message}`);
@@ -542,7 +581,7 @@ private async crawlUrl(url: string, depth: number): Promise<void> {
 
 ```ts
 private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 ```
 </details>
@@ -556,8 +595,19 @@ getStats() {
     return {
       totalPages: this.results.length,
       uniqueUrls: this.visited.size,
-      maxDepthReached: Math.max(...this.results.map(r => r.depth), 0),
+      maxDepthReached: Math.max(...this.results.map((r) => r.depth), 0),
     };
+  }
+```
+</details>
+
+##### `test(): void`
+
+<details><summary>Code</summary>
+
+```ts
+private test() {
+    console.log("This is a test method.");
   }
 ```
 </details>
