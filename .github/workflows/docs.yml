@@ -53,6 +53,9 @@ jobs:
           git add docs/
           git diff --staged --quiet || git commit -m "docs: auto-update documentation [skip ci]"
           git push
+      - name: Prepare for deployment
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: touch ./docs/.nojekyll    
       - name: Deploy to GitHub Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v4
