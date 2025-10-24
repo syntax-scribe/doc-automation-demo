@@ -17,7 +17,10 @@
 
 ## Root
 
-??? abstract "Root Configuration (2 files)"
+<details>
+<summary>Root Configuration (2 files)</summary>
 
-    - [crawler.md](./crawler.md)
-    - [example.md](./example.md)
+- [crawler.md](./crawler.md)
+- [example.md](./example.md)
+
+</details>

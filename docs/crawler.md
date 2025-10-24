@@ -299,7 +299,7 @@ getStats() {
 
 ```typescript
 private test() {
-    console.log("This is a test method.");
+    console.log("This is a test method....");
   }
 ```
 </details>
@@ -453,7 +453,7 @@ export class WebCrawler {
   }
 
   private test() {
-    console.log("This is a test method.");
+    console.log("This is a test method....");
   }
 }
 ```
@@ -607,7 +607,7 @@ getStats() {
 
 ```ts
 private test() {
-    console.log("This is a test method.");
+    console.log("This is a test method....");
   }
 ```
 </details>
