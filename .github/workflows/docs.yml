@@ -34,7 +34,7 @@ jobs:
         run: npm install -g syntax-scribe
 
       - name: Generate documentation
-        run:  syntax-scribe docs document --sourceDirectory ./src --docDirectory ./docs -f
+        run:  syntax-scribe docs document --sourceDirectory ./src --docDirectory ./docs 
 
       - name: Check for documentation changes
         id: verify-changes
@@ -53,12 +53,3 @@ jobs:
           git add docs/
           git diff --staged --quiet || git commit -m "docs: auto-update documentation [skip ci]"
           git push
-      - name: Prepare for deployment
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: touch ./docs/.nojekyll    
-      - name: Deploy to GitHub Pages
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
