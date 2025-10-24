@@ -1,6 +1,6 @@
-import axios from 'axios';
-import * as cheerio from 'cheerio';
-import { URL } from 'url';
+import axios from "axios";
+import * as cheerio from "cheerio";
+import { URL } from "url";
 
 export interface CrawlOptions {
   maxDepth?: number;
@@ -49,7 +49,10 @@ export class WebCrawler {
    */
   private async crawlUrl(url: string, depth: number): Promise<void> {
     // Check if we've reached our limits
-    if (depth > this.options.maxDepth || this.visited.size >= this.options.maxPages) {
+    if (
+      depth > this.options.maxDepth ||
+      this.visited.size >= this.options.maxPages
+    ) {
       return;
     }
 
@@ -61,8 +64,9 @@ export class WebCrawler {
     // Check if domain is allowed
     if (this.options.allowedDomains.length > 0) {
       const urlObj = new URL(url);
-      const isAllowed = this.options.allowedDomains.some(domain =>
-        urlObj.hostname === domain || urlObj.hostname.endsWith(`.${domain}`)
+      const isAllowed = this.options.allowedDomains.some(
+        (domain) =>
+          urlObj.hostname === domain || urlObj.hostname.endsWith(`.${domain}`)
       );
       if (!isAllowed) {
         return;
@@ -76,24 +80,27 @@ export class WebCrawler {
       // Fetch the page
       const response = await axios.get(url, {
         headers: {
-          'User-Agent': 'Mozilla/5.0 (compatible; SimpleWebCrawler/1.0)',
+          "User-Agent": "Mozilla/5.0 (compatible; SimpleWebCrawler/1.0)",
         },
         timeout: 10000,
       });
 
       // Parse HTML
       const $ = cheerio.load(response.data);
-      const title = $('title').text().trim() || 'No title';
+      const title = $("title").text().trim() || "No title";
 
       // Extract all links
       const links: string[] = [];
-      $('a[href]').each((_, element) => {
-        const href = $(element).attr('href');
+      $("a[href]").each((_, element) => {
+        const href = $(element).attr("href");
         if (href) {
           try {
             const absoluteUrl = new URL(href, url).href;
             // Only include HTTP(S) URLs
-            if (absoluteUrl.startsWith('http://') || absoluteUrl.startsWith('https://')) {
+            if (
+              absoluteUrl.startsWith("http://") ||
+              absoluteUrl.startsWith("https://")
+            ) {
               links.push(absoluteUrl);
             }
           } catch (e) {
@@ -121,7 +128,6 @@ export class WebCrawler {
       for (const link of links) {
         await this.crawlUrl(link, depth + 1);
       }
-
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error(`  Error crawling ${url}: ${error.message}`);
@@ -135,7 +141,7 @@ export class WebCrawler {
    * Delay execution for the specified milliseconds
    */
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -145,7 +151,11 @@ export class WebCrawler {
     return {
       totalPages: this.results.length,
       uniqueUrls: this.visited.size,
-      maxDepthReached: Math.max(...this.results.map(r => r.depth), 0),
+      maxDepthReached: Math.max(...this.results.map((r) => r.depth), 0),
     };
+  }
+
+  private test() {
+    console.log("This is a test method.");
   }
 }
